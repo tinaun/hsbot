@@ -3,6 +3,7 @@
 import time
 import praw
 import re
+import threading
 from pprint import pprint
 
 class Bot:
@@ -19,8 +20,10 @@ class Bot:
         self.r.login(self.account, self.password)
         pprint("Succesfully logged in as " + self.account)
         while True:
-            pprint("clearing modqueue...")
             self.clear_modqueue()
+            if (time.localtime()[3] > 13) and (time.localtime()[3] < 15):
+                self.check_inbox()
+                
             time.sleep(timeout)
     
     def clear_modqueue(self):
@@ -31,15 +34,33 @@ class Bot:
                 if isinstance(submission, praw.objects.Comment):
                     text = submission.body.lower()
                 else:
-                    text = submission.selftext.lower() + submission.domain()
+                    text = submission.selftext.lower() + submission.domain
 
-                s = re.compile("\.tumblr\.com")
+                s = re.compile('\.tumblr\.com')
+                p = re.compile('\.deviantart\.net')
                 has_tumblr = s.search(text);
-                if has_tumblr:
+                has_deviant = p.search(text);
+                if has_tumblr or has_deviant:
                     submission.approve()
                     print("Approved!")
                 else:
                     print("Nah...")
+
+    def check_inbox(self):
+        inbox = list(self.r.get_unread(limit=None))
+
+        n = 1
+        for msg in inbox:
+            print("Message " + str(n) + "of " + str(len(inbox)))
+            print(msg)
+            confirm = input("expand? ").lower()
+            if (confirm[0] == 'y'):
+                print(msg.body)
+            confirm = input("reply? ").lower()
+            if (confirm[0] == 'y'):
+                rep = input("--> ")
+                msg.reply(rep)
+            msg.mark_as_read()
 
 pw = ' '
 user = 'homestuck moderator bot v0.9 by /u/tinaun'
