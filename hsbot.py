@@ -1,10 +1,38 @@
-#homestuck bot, manages flair
+#homestuck bot, manages flair and approves posts
 
-import time
 import praw
-import re
+import re, time, cmd
 import threading
 from pprint import pprint
+
+class Console(cmd.Cmd):
+    """Console for sending commands to the bot"""
+    intro = "welcome, moderator!        press ? or help to get started"
+    prompt = "--> "
+    
+    #implement later
+    def do_message(self, arg):
+        """ message user or subreddit mods"""
+        pass
+    def do_clear(self, arg):
+        """ clear inbox, modmail, or modqueue"""
+        pass
+    def do_check(self, arg):
+        """ check for new messages, reply to them if possible"""
+        pass
+    def do_schedule(self, arg):
+        """ schedule a task to be sent at regular intervals"""
+        pass
+    def do_post(self, arg):
+        """ submit a post to subreddits you moderate """
+        pass
+    def do_ban(self, arg):
+        """ ban user """
+        pass
+    def do_unban(self, arg):
+        """ unban user """
+        pass
+
 
 class Bot:
     """Clears Modqueue of tumblr posts"""
@@ -68,7 +96,7 @@ user = 'homestuck moderator bot v0.9 by /u/tinaun'
 hsbot = Bot('homestuck', 'homestuck-bot', pw, user)
 hsbot.start()
 
-
+#Console().cmdLoop()
                 
 
 
